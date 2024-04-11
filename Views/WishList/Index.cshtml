@@ -1,7 +1,23 @@
 ﻿@model E_commerce_MVC.viewModels.WishListViewModel
 
-<h2>Specific User Wishlist</h2>
 
+
+
+<style>
+    .page-item.active .page-link {
+        z-index: 1;
+        color: #fff;
+        background-color: #9F78FF;
+        border-color: #9F78FF;
+    }
+
+    .page-link {
+        color: #9F78FF;
+    }
+</style>
+
+<div class="container">
+    <h2> @ViewData["Username"], WishList </h2>
 <table class="table table-light table-hover">
     <thead>
         <tr>
@@ -33,4 +49,19 @@
         }
     </tbody>
 </table>
+
+<!-- Pagination -->
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.Page ? "active" : "")">
+                <a class="page-link" asp-action="Index" asp-route-id="@Model.CurrentUserId" asp-route-page="@i">@i</a>
+            </li>
+        }
+    </ul>
+</nav>
+
+</div>
+
 

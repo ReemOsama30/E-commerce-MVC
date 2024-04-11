@@ -1,0 +1,179 @@
+﻿@model E_commerce_MVC.viewModels.ProductPartViewModel
+
+@{
+    ViewData["Title"] = "Details";
+    var product = ViewData["Product"] as Product;
+    var comments = ViewData["CommentsWithRatings"] as List<Comments>;
+    string username = ViewData["Username"] as string;
+    string userid = ViewData["UserId"] as string;
+
+    //  var comments = ViewData["Comments"] as List<Comment>;
+}
+
+
+
+
+
+
+    <div class="container">
+    <h1>Details</h1>
+        <div class="card me-md-2">
+            <div class="card-body">
+                <h2 class="card-title">@product.Name</h2>
+                <img src="@product.Image_Url"/>
+                <h4 class="card-text" style="display: inline;">Product Id:</h4>
+                <p style="font-size:20px;  display: inline;">@product.Id</p>
+                <br />
+                <h4 class="card-text" style="display: inline;">Description:</h4>
+                <p style="font-size:20px; display: inline;">@product.Description</p>
+                <br />
+
+                <h4 class="card-text" style="display: inline;">Price:</h4>
+                <p style="font-size:20px; display: inline;">$@product.Price</p>
+                <br />
+
+                <h4 class="card-text" style="display: inline;">Quantity:</h4>
+                <p style="font-size:20px; display: inline;" id="Product_Quentity">@product.Quantity</p>
+            </div>
+        </div>
+    </div>
+    <br />
+    <br />
+<div class="container">
+<div class="row">
+
+
+
+        <div class="col-md-6">
+            <h1>Welcome, @username!</h1>
+            <input type="text" class="form form-control" placeholder="PLZ Leave Your Comment" id="Comment" style="width:400px;height:35px" />
+
+            <span class="text-warning">
+                <i class="ratingStar far fa-star" data-rating="1" style="display:inline-block;margin-top:20px"></i>
+                <i class="ratingStar far fa-star" data-rating="2" style="display:inline-block; margin-top:20px"></i>
+                <i class="ratingStar far fa-star" data-rating="3" style="display:inline-block; margin-top:20px"></i>
+                <i class="ratingStar far fa-star" data-rating="4" style="display:inline-block; margin-top:20px"></i>
+                <i class="ratingStar far fa-star" data-rating="5" style="display:inline-block; margin-top:20px"></i>
+            </span>
+            <br>
+            <input type="hidden" name="Rating" id="ratingsValue" />
+            <input type="button" onclick="SendComment()" value="Send" class="btn" style=" display:inline; margin-top:20px" />
+        </div>
+
+
+
+
+
+
+    <div class="col-md-6 ">
+        <div>
+                <h1>Feedbacks</h1>
+            <hr />
+            <ul id="AllComment">
+                @foreach (var comment in comments)
+                {
+                    <li style="font-size:18px">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>@comment.applicationUser.UserName -- @comment.Text</span>
+                            
+
+                            <div style="text-align: right;">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <i class="text-warning @(i <= comment.Rating ? "fas" : "far") fa-star"></i>
+                                }
+                            </div>
+
+                          
+                        </div>
+                    </li>
+
+                }
+            </ul>
+        </div>
+    </div>
+
+
+
+        <a asp-action="GetAllProducts" class="btn " style="margin:10px">Back to List</a>
+
+</div>
+</div>
+<input type="hidden" id="Product_id" value="@product.Id" />
+
+
+
+
+<br />
+
+
+
+
+
+
+ <script src="/lib/jquery/dist/jquery.min.js"> </script>
+<script src="/lib/microsoft-signalr/signalr.min.js"> </script>
+
+
+
+<script>
+
+    //1) Declare connection with any hub
+    var hub = new signalR.HubConnectionBuilder().withUrl("/productHub").build();
+
+    //2) start connection
+    hub.start().then(function () {
+        console.log("connection success");
+    });
+
+
+    $(".ratingStar").hover(function () {
+
+        $(".ratingStar").addClass("far").removeClass("fas");
+        $(this).addClass("fas").removeClass("far");
+        $(this).prevAll(".ratingStar").addClass("fas").removeClass("far");
+    });
+
+    $(".ratingStar").click(function () {
+        var starValue = $(this).attr("data-rating");
+        $("#ratingsValue").val();
+    });
+
+
+    //3) server send data to handel   notify
+    hub.on("ReciveNewComment", function (comment, productId, rating, username) {
+        var currentProductID = parseInt($("#Product_id").val());
+        if (productId == currentProductID) {
+            var stars = "";
+            for (var i = 1; i <= 5; i++) {
+                if (i <= rating) {
+                    stars += "<i class='text-warning fas fa-star'></i>";
+                } else {
+                    stars += "<i class='text-warning far fa-star'></i>";
+                }
+            }
+            var commentHtml = "<li style=\"font-size:18px;\"><div style=\"display: flex; justify-content: space-between;\"><span>" + username + ": " + comment + "</span><div style=\"text-align: right;\">" + stars + "</div></div></li>";
+            $("#AllComment").append(commentHtml);
+        }
+    });
+
+
+
+
+
+
+    //4) send info to server
+    function SendComment() {
+      //  var name = $("#Name").val();
+        var comment = $("#Comment").val();
+        var proId = parseInt($("#Product_id").val());
+        var rating = $(".ratingStar.fas").length;
+        console.log( " ," + comment + " ," + proId + " ," + rating);
+
+        hub.invoke("writeComment",  comment, proId, rating);
+    }
+
+
+
+   
+</script>
