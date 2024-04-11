@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using E_commerce_MVC.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,26 +15,28 @@ namespace E_commerce.Models
         public DbSet<Shipment> Shipments { get; set; }
         public DbSet<WishList> WishLists { get; set; }
 
+        public DbSet<Comments> Comments { set; get; }
+
         public Context() { }
         public Context(DbContextOptions<Context> options) : base(options)
         {
 
         }
-        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-         
+
 
             // Configure Relationships and Cascade Behavior
 
-           // Cart - ApplicationUser Relationship
-           modelBuilder.Entity<Cart>()
-                .HasOne(c => c.customer)
-                .WithMany(u => u.carts)
-                .HasForeignKey(c => c.Customer_Id)
-                .OnDelete(DeleteBehavior.NoAction);
+            // Cart - ApplicationUser Relationship
+            modelBuilder.Entity<Cart>()
+                 .HasOne(c => c.customer)
+                 .WithMany(u => u.carts)
+                 .HasForeignKey(c => c.Customer_Id)
+                 .OnDelete(DeleteBehavior.NoAction);
 
             // Order - Payment Relationship
             modelBuilder.Entity<Order>()

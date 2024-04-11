@@ -1,6 +1,7 @@
 ﻿using E_commerce.Models;
 using E_commerce_MVC.Repository;
 using E_commerce_MVC.viewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_commerce_MVC.Controllers
@@ -10,16 +11,22 @@ namespace E_commerce_MVC.Controllers
     {
         private readonly IWishListRepository wishListRepository;
         private readonly IProductRepository productRepository;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public WishListController(IWishListRepository wishListRepository, IProductRepository productRepository)
+        public WishListController(IWishListRepository wishListRepository, IProductRepository productRepository, UserManager<ApplicationUser> userManager)
         {
             this.wishListRepository = wishListRepository;
             this.productRepository = productRepository;
+            this.userManager = userManager;
         }
         //[Authorize]
-        public IActionResult Index(string id)
+        public async Task<IActionResult> Index(string id, int page = 1, int pageSize = 2)
         {
             List<WishList> wishLists = wishListRepository.GetAllbyCustomerId(id);
+            int totalItems = wishLists.Count;
+            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            wishLists = wishLists.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
             WishListViewModel wishListViewModel = new WishListViewModel();
             foreach (WishList item in wishLists)
             {
@@ -37,8 +44,20 @@ namespace E_commerce_MVC.Controllers
                     wishListViewModel.Stock.Add("Not Available");
                 }
             }
+            var currentUser = await userManager.GetUserAsync(User);
+            string username = User.Identity.Name;
+            ViewData["Username"] = username;
+
+            wishListViewModel.CurrentUserId = id;
+            wishListViewModel.Page = page;
+            wishListViewModel.TotalPages = totalPages;
+
             return View("Index", wishListViewModel);
         }
+
+
+
+
         public ActionResult Remove(int id)
         {
             WishList wishList = wishListRepository.Get(p => p.Product_Id == id);

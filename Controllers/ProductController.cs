@@ -1,9 +1,10 @@
 ﻿using E_commerce.Models;
 using E_commerce_MVC.Repository;
 using E_commerce_MVC.viewModels;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+
+
 
 namespace E_commerce_MVC.Controllers
 {
@@ -12,23 +13,30 @@ namespace E_commerce_MVC.Controllers
         private readonly IProductRepository ProductRepository;
         private readonly ICategoryRepository CategoryRepository;
         private readonly IWebHostEnvironment webHostEnvironment;
+        private readonly ICommentRepository commentRepository;
+        private readonly IWishListRepository wishListRepository;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public ProductController(IProductRepository ProductRepository, ICategoryRepository CategoryRepository, IWebHostEnvironment webHostEnvironment)
+        public ProductController(IProductRepository ProductRepository, ICategoryRepository CategoryRepository, IWebHostEnvironment webHostEnvironment
+            , UserManager<ApplicationUser> userManager, ICommentRepository commentRepository, IWishListRepository wishListRepository)
         {
             this.ProductRepository = ProductRepository;
             this.CategoryRepository = CategoryRepository;
             this.webHostEnvironment = webHostEnvironment;
+            this.commentRepository = commentRepository;
+            this.wishListRepository = wishListRepository;
+            this.userManager = userManager;
         }
 
 
         public IActionResult show()
         {
-          List<Product> newproduct = ProductRepository.GetAll().ToList();
-         
+            List<Product> newproduct = ProductRepository.GetAll().ToList();
+
             return View(newproduct);
         }
 
-      
+
         public IActionResult addNewProduct()
         {
             newProductVM newProductVM = new newProductVM();
@@ -59,7 +67,7 @@ namespace E_commerce_MVC.Controllers
                 product.Price = newProduct.Price;
                 product.Description = newProduct.Description;
                 product.Category_Id = newProduct.Category_Id;
-                product.Quantity=newProduct.Quantity;
+                product.Quantity = newProduct.Quantity;
 
                 ProductRepository.insert(product);
                 ProductRepository.save();
@@ -75,19 +83,19 @@ namespace E_commerce_MVC.Controllers
 
 
 
-    
+
 
         public IActionResult Index()
         {
             return View();
-        } 
+        }
 
         //dina controllers
 
         public IActionResult GetAllProducts()
         {
             List<Product> products = (List<Product>)ProductRepository.GetAll();
-            return View("GetAllProducts",products);
+            return View("GetAllProducts", products);
         }
 
         public IActionResult GetProductsByCategoryId(int CategoryId)
@@ -108,20 +116,34 @@ namespace E_commerce_MVC.Controllers
                 ProductsId = productIds
             };
 
-            return View("GetProductsByCategoryId" , productPartViewModel);
+            return View("GetProductsByCategoryId", productPartViewModel);
         }
 
         public IActionResult AddToCart(int ProductId)
         {
             Product product = ProductRepository.Get(p => p.Id == ProductId);
-            return View("ShoppingCart",product);
+            return View("ShoppingCart", product);
         }
 
-        
-        public IActionResult AddToWishList(int ProductId)
+
+        //public IActionResult AddToWishList(int ProductId)
+        //{
+        //    Product product = ProductRepository.Get(p => p.Id == ProductId);
+        //    return View("wishingList", product);
+        //}
+
+
+        public async Task<IActionResult> AddToWishList(int ProductId)
         {
             Product product = ProductRepository.Get(p => p.Id == ProductId);
-            return View("wishingList",product);
+            var currentUser = await userManager.GetUserAsync(User);
+            string CurrentUserId = currentUser.Id;
+            WishList wishList = new WishList();
+            wishList.Customer_Id = CurrentUserId;
+            wishList.Product_Id = product.Id;
+            wishListRepository.insert(wishList);
+            wishListRepository.save();
+            return RedirectToAction("Index", "WishList", new { id = CurrentUserId });
         }
 
         //Get latest product in each category
@@ -132,6 +154,26 @@ namespace E_commerce_MVC.Controllers
         //    return View("_GetLatestProduct");
 
         //}
+
+
+        public async Task<IActionResult> Details(int id)
+        {
+            Product product = ProductRepository.Get(p => p.Id == id);
+
+            var commentsWithRatings = commentRepository.GetAllIncludeUser(id);
+
+
+            var currentUser = await userManager.GetUserAsync(User);
+            string username = User.Identity.Name;
+            string userid = currentUser.Id;
+
+            ViewData["Username"] = username;
+            ViewData["UserId"] = userid;
+            ViewData["Product"] = product;
+            ViewData["CommentsWithRatings"] = commentsWithRatings;
+
+            return View("Details");
+        }
 
     }
 }
