@@ -17,7 +17,10 @@
 </style>
 
 <div class="container">
-    <h2> @ViewData["Username"], WishList </h2>
+    
+    <a asp-controller="Product" asp-action="GetAllProducts" class="btn " >Back to Home</a>
+   
+    <h1 style="margin-top:25px"> @ViewData["Username"], WishList </h1>
 <table class="table table-light table-hover">
     <thead>
         <tr>
@@ -38,7 +41,7 @@
                         <i class="bi bi-x-circle-fill text-dark"></i>
                     </a>
                 </td>
-                <td class="text-center"><img src="@Model.ImgUrl[i]" class="img-thumbnail" alt="@Model.ProductName[i]"></td>
+                <td class="text-center"><img src="/img/gallery/@Model.ImgUrl[i]" class="img-thumbnail" alt="@Model.ProductName[i]" style="width:200px; height:130px"></td>
                 <td class="text-center">@Model.ProductName[i]</td>
                 <td class="text-center">$@Model.Price[i]</td>
                 <td class="text-center">@Model.Stock[i]</td>
