@@ -15,5 +15,8 @@
         public List<string> ImgUrl { get; set; }
         public List<double> Price { get; set; }
         public List<string> Stock { get; set; }
+        public int Page { get; set; }
+        public int TotalPages { get; set; }
+        public string CurrentUserId { get; set; }
     }
 }
