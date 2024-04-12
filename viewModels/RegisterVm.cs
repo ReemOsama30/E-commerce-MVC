@@ -21,6 +21,10 @@ namespace E_commerce.viewModels
 
         public string address { get; set; }
 
+        [Required(ErrorMessage = "Please select a role")]
+        [Display(Name = "Role")]
+        public string Role { get; set; }
+
 
     }
 }

@@ -15,28 +15,36 @@
 
 
 
-    <div class="container">
-    <h1>Details</h1>
-        <div class="card me-md-2">
-            <div class="card-body">
-                <h2 class="card-title">@product.Name</h2>
-                <img src="@product.Image_Url"/>
-                <h4 class="card-text" style="display: inline;">Product Id:</h4>
-                <p style="font-size:20px;  display: inline;">@product.Id</p>
-                <br />
-                <h4 class="card-text" style="display: inline;">Description:</h4>
-                <p style="font-size:20px; display: inline;">@product.Description</p>
-                <br />
+<div class="container">
+    <a asp-action="GetAllProducts" class="btn " style="margin:10px">Back to Home</a>
 
-                <h4 class="card-text" style="display: inline;">Price:</h4>
-                <p style="font-size:20px; display: inline;">$@product.Price</p>
-                <br />
+    <div class="row justify-content-center">
+        
+        <div class="col-md-4">
+           
+            <div class="card">
+              
+                <div class="card-body">
+                    <h2 class="card-title">@product.Name</h2>
+                    <img src="/img/gallery/@product.Image_Url" style="width: 200px; height: 200px;" />
 
-                <h4 class="card-text" style="display: inline;">Quantity:</h4>
-                <p style="font-size:20px; display: inline;" id="Product_Quentity">@product.Quantity</p>
+                    <br />
+                    <h4 class="card-text" style="display: inline;">Description:</h4>
+                    <p style="font-size: 16px; display: inline;">@product.Description</p>
+                    <br />
+
+                    <h4 class="card-text" style="display: inline;">Price:</h4>
+                    <p style="font-size: 16px; display: inline;">$@product.Price</p>
+                    <br />
+
+                    <h4 class="card-text" style="display: inline;">Quantity:</h4>
+                    <p style="font-size: 16px; display: inline;" id="Product_Quentity">@product.Quantity</p>
+                </div>
             </div>
         </div>
     </div>
+</div>
+
     <br />
     <br />
 <div class="container">
@@ -74,7 +82,7 @@
                 {
                     <li style="font-size:18px">
                         <div style="display: flex; justify-content: space-between;">
-                            <span>@comment.applicationUser.UserName -- @comment.Text</span>
+                            <span>@comment.applicationUser.UserName : @comment.Text</span>
                             
 
                             <div style="text-align: right;">
@@ -95,10 +103,12 @@
 
 
 
-        <a asp-action="GetAllProducts" class="btn " style="margin:10px">Back to List</a>
 
 </div>
+
+
 </div>
+
 <input type="hidden" id="Product_id" value="@product.Id" />
 
 
