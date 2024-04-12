@@ -1,7 +1,8 @@
 ﻿@model E_commerce_MVC.viewModels.WishListViewModel
 
-
-
+@{
+    ViewData["Title"] = "Wishlist";
+}
 
 <style>
     .page-item.active .page-link {
@@ -17,54 +18,102 @@
 </style>
 
 <div class="container">
-    
-    <a asp-controller="Product" asp-action="GetAllProducts" class="btn " >Back to Home</a>
-   
-    <h1 style="margin-top:25px"> @ViewData["Username"], WishList </h1>
-<table class="table table-light table-hover">
-    <thead>
-        <tr>
-            <th class="text-center"></th>
-            <th class="text-center">Product Image</th>
-            <th class="text-center">Product Name</th>
-            <th class="text-center">Product Price</th>
-            <th class="text-center">Stock Status</th>
-            <th class="text-center">Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @for (var i = 0; i < Model.ProductName.Count; i++)
-        {
+    <a asp-controller="Product" asp-action="GetAllProducts" class="btn">Back to Home</a>
+
+    <h1 style="margin-top:25px">@ViewData["Username"], WishList</h1>
+
+    <table class="table table-light table-hover">
+        <thead>
             <tr>
-                <td class="text-center">
-                    <a asp-action="Remove" asp-route-id="@Model.ProductId[i]">
-                        <i class="bi bi-x-circle-fill text-dark"></i>
-                    </a>
-                </td>
-                <td class="text-center"><img src="/img/gallery/@Model.ImgUrl[i]" class="img-thumbnail" alt="@Model.ProductName[i]" style="width:200px; height:130px"></td>
-                <td class="text-center">@Model.ProductName[i]</td>
-                <td class="text-center">$@Model.Price[i]</td>
-                <td class="text-center">@Model.Stock[i]</td>
-                <td class="text-center">
-                    <a class="btn btn-info" asp-action="#" asp-controller="Cart">Add To Cart</a>
-                </td>
+                <th class="text-center"></th>
+                <th class="text-center">Product Image</th>
+                <th class="text-center">Product Name</th>
+                <th class="text-center">Product Price</th>
+                <th class="text-center">Stock Status</th>
+                <th class="text-center">Action</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @for (var i = 0; i < Model.ProductName.Count; i++)
+            {
+                <tr id="product-@Model.ProductId[i]">
+                    <td class="text-center">
+                        <a href="#" class="remove-from-wishlist" data-userid="@Model.CurrentUserId" data-productid="@Model.ProductId[i]">
+                            <i class="bi bi-x-circle-fill text-dark"></i>
+                        </a>
+                    </td>
+                    <td class="text-center"><img src="/img/gallery/@Model.ImgUrl[i]" class="img-thumbnail" alt="@Model.ProductName[i]" style="width:200px; height:130px"></td>
+                    <td class="text-center">@Model.ProductName[i]</td>
+                    <td class="text-center">$@Model.Price[i]</td>
+                    <td class="text-center">@Model.Stock[i]</td>
+                    <td class="text-center">
+                        <a class="btn btn-info" asp-action="#" asp-controller="Cart">Add To Cart</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-<!-- Pagination -->
-<nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
-        @for (int i = 1; i <= Model.TotalPages; i++)
-        {
-            <li class="page-item @(i == Model.Page ? "active" : "")">
-                <a class="page-link" asp-action="Index" asp-route-id="@Model.CurrentUserId" asp-route-page="@i">@i</a>
-            </li>
-        }
-    </ul>
-</nav>
-
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.Page ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-id="@Model.CurrentUserId" asp-route-page="@i">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
 </div>
 
+<!-- Include jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.12/signalr.min.js"></script>
 
+<script>
+    $(document).ready(function () {
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/whishlistHub")
+            .build();
+
+        connection.start().then(function () {
+            console.log("SignalR Connected");
+        }).catch(function (err) {
+            console.error(err.toString());
+        });
+
+        // Function to handle remove from wishlist
+        function removeFromWishlist(userId, productId, row) {
+            if (confirm("Are you sure you want to remove this item from your wishlist?")) {
+                connection.invoke("RemoveProductFromWishList", userId, productId)
+                    .catch(function (err) {
+                        console.error(err.toString());
+                    });
+
+                // Fade out the row and then remove it
+                row.fadeOut(300, function () {
+                    $(this).remove();
+                });
+            }
+        }
+
+        // Attach click event to remove-from-wishlist links
+        $(document).on("click", ".remove-from-wishlist", function (e) {
+            e.preventDefault();
+            var userId = $(this).data("userid");
+            var productId = $(this).data("productid");
+            var row = $(this).closest("tr"); // Get the parent row
+            removeFromWishlist(userId, productId, row);
+        });
+
+        connection.on("ProductRemoved", function (userId, productId) {
+            // Handle product removal on the client side if needed
+            console.log("Product removed:", productId);
+            // Example: Remove the product from the UI
+            $("#product-" + productId).fadeOut(300, function () {
+                $(this).remove();
+            });
+        });
+    });
+</script>

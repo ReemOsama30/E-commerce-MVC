@@ -3,10 +3,13 @@ using E_commerce_MVC.Repository;
 using E_commerce_MVC.viewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace E_commerce_MVC.Controllers
 {
-
     public class WishListController : Controller
     {
         private readonly IWishListRepository wishListRepository;
@@ -19,8 +22,8 @@ namespace E_commerce_MVC.Controllers
             this.productRepository = productRepository;
             this.userManager = userManager;
         }
-        //[Authorize]
-        public async Task<IActionResult> Index(string id, int page = 1, int pageSize = 2)
+
+        public async Task<IActionResult> Index(string id, int page = 1, int pageSize = 4)
         {
             List<WishList> wishLists = wishListRepository.GetAllbyCustomerId(id);
             int totalItems = wishLists.Count;
@@ -44,6 +47,7 @@ namespace E_commerce_MVC.Controllers
                     wishListViewModel.Stock.Add("Not Available");
                 }
             }
+
             var currentUser = await userManager.GetUserAsync(User);
             string username = User.Identity.Name;
             ViewData["Username"] = username;
@@ -55,16 +59,26 @@ namespace E_commerce_MVC.Controllers
             return View("Index", wishListViewModel);
         }
 
-
-
-
-        public ActionResult Remove(int id)
+        public async Task<ActionResult> Remove(int id)
         {
             WishList wishList = wishListRepository.Get(p => p.Product_Id == id);
-            wishListRepository.delete(wishList);
-            wishListRepository.save();
+            if (wishList != null)
+            {
+                wishListRepository.HardDelete(wishList);
+                wishListRepository.save();
+            }
             return RedirectToAction("Index", new { id = wishList.Customer_Id });
         }
+    
+
+
+        //public ActionResult Remove(int id)
+        //{
+        //    WishList wishList = wishListRepository.Get(p => p.Product_Id == id);
+        //    wishListRepository.delete(wishList);
+        //    wishListRepository.save();
+        //    return RedirectToAction("Index", new { id = wishList.Customer_Id });
+        //}
 
 
     }
