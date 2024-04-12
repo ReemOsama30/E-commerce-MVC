@@ -63,11 +63,16 @@
                                         var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
                                     }
 
-                                    <a href="@Url.Action("Index", "WishList", new { id = id })" title="Wishlist">
-                                        <i class="fa fa-heart"></i>
-                                    </a>
-                            </div>
-                            <!-- Search Box -->
+                                    @if (User.Identity.IsAuthenticated == true)
+
+
+                                    {
+                                        <a href="@Url.Action("Index", "WishList", new { id = id })" title="Wishlist">
+                                            <i class="fa fa-heart"></i>
+                                        </a>}
+                                        </div>
+                                    
+                                    <!-- Search Box -->
                             <div class="search d-none d-md-block">
                                 <ul class="d-flex align-items-center">
                                     <li class="mr-15">
