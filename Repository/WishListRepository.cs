@@ -16,5 +16,14 @@ namespace E_commerce_MVC.Repository
             return wishLists;
         }
 
+        public void HardDelete(WishList wishList)
+        {
+            context.Remove(wishList);
+        }
+        public WishList getwishlistByProductId(int id)
+        {
+            return context.WishLists.FirstOrDefault(w => w.Product_Id == id);
+        }
+
     }
 }

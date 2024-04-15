@@ -21,6 +21,8 @@ namespace E_commerce.viewModels
 
         public string address { get; set; }
 
+     
+
 
     }
 }

@@ -58,6 +58,7 @@ namespace E_commerce_MVC
 
             app.UseAuthorization();
             app.MapHub<ProductHub>("/productHub");
+            app.MapHub<whishlistHub>("/whishlistHub");
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=category}/{action=getallcategory}/{id?}");

@@ -28,6 +28,9 @@ namespace E_commerce.Models
             base.OnModelCreating(modelBuilder);
 
 
+            modelBuilder.Entity<Category>().HasData(new Category { Id = 1, Name = "Top", IsDeleted = false, imageURL = "arrival1.png" });
+            modelBuilder.Entity<Category>().HasData(new Category { Id = 2, Name = "bottom", IsDeleted = false, imageURL = "arrival2.png" });
+            modelBuilder.Entity<Category>().HasData(new Category { Id = 3, Name = "dress", IsDeleted = false, imageURL = "arrival3.png" });
 
             // Configure Relationships and Cascade Behavior
 
@@ -80,5 +83,8 @@ namespace E_commerce.Models
                 .HasForeignKey(p => p.Category_Id)
                 .OnDelete(DeleteBehavior.NoAction);
         }
+
+
     }
+
 }

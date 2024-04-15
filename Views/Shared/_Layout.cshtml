@@ -1,4 +1,5 @@
-﻿<!doctype html>
+﻿@using System.Security.Claims
+<!doctype html>
 <html class="no-js" lang="zxx">
 <head>
     <meta charset="utf-8">
@@ -58,11 +59,20 @@
                         <div class="header-right1 d-flex align-items-center">
                             <!-- Social -->
                             <div class="header-social d-none d-md-block">
-                                <a href="#"><i class="fab fa-twitter"></i></a>
-                                <a href="https://bit.ly/sai4ull"><i class="fab fa-facebook-f"></i></a>
-                                <a href="#"><i class="fab fa-pinterest-p"></i></a>
-                            </div>
-                            <!-- Search Box -->
+                                    @{
+                                        var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                                    }
+
+                                    @if (User.Identity.IsAuthenticated == true)
+
+
+                                    {
+                                        <a href="@Url.Action("Index", "WishList", new { id = id })" title="Wishlist">
+                                            <i class="fa fa-heart"></i>
+                                        </a>}
+                                        </div>
+                                    
+                                    <!-- Search Box -->
                             <div class="search d-none d-md-block">
                                 <ul class="d-flex align-items-center">
                                     <li class="mr-15">
@@ -90,8 +100,6 @@
         <!-- Header End -->
     </header>
     <!-- header end -->
-
-
     @RenderBody()
 
     
@@ -139,5 +147,8 @@
     {
         @RenderSection("Scripts", required: false)
     }
+
+
+
 </body>
 </html>
