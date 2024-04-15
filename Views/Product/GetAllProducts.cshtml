@@ -120,7 +120,8 @@
                                                 </div>
                                             </div>
                                             <div class="popular-caption">
-                                                <h3><a href="/Product/Details">@p.Name</a></h3>
+                                              @*   <h3><a href="/Product/Details">@p.Name</a></h3> *@
+                                            <h3><a asp-action="Details" asp-route-id="@p.Id">@p.Name</a></h3>
                                                 <div class="rating mb-10">
                                                     <i class="fas fa-star"></i>
                                                     <i class="fas fa-star"></i>
@@ -131,7 +132,7 @@
                                                 <span>@p.Price</span>
                                                 <div >
                                                    <a asp-action="AddToCart" asp-route-Id="@p.Id" class="btn btn-info">Add To Cart</a>
-                                                   <a asp-action="AddToCart" asp-route-Id="@p.Id" class="btn btn-info">Add To WishingList</a>
+                                                <a asp-controller="Product" asp-action="AddToWishList" asp-route-ProductId="@p.Id" class="btn btn-info">Add To Wish List</a>
                                                 </div>
                                             </div>
                                         </div>

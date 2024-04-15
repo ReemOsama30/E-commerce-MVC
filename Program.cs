@@ -1,5 +1,6 @@
 using E_commerce.Models;
 using E_commerce.Repository;
+using E_commerce_MVC.myHubs;
 using E_commerce_MVC.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,10 @@ namespace E_commerce_MVC
             builder.Services.AddScoped<IRepository<Shipment>, Repository<Shipment>>();
             builder.Services.AddScoped<IRepository<Payment>, Repository<Payment>>();
 
+            builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+
+
+            builder.Services.AddSignalR();
 
 
             var app = builder.Build();
@@ -52,9 +57,11 @@ namespace E_commerce_MVC
             app.UseAuthentication();
 
             app.UseAuthorization();
+            app.MapHub<ProductHub>("/productHub");
+            app.MapHub<whishlistHub>("/whishlistHub");
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=category}/{action=getallcategory}/{id?}");
 
             app.Run();
         }
