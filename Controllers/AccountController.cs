@@ -4,6 +4,7 @@ using E_commerce.viewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol.Core.Types;
 
 namespace E_commerce.Controllers
 {
@@ -21,6 +22,24 @@ namespace E_commerce.Controllers
             _repository = appRpo;
 
         }
+        public  IActionResult DeleteUser(string id)
+        {
+            ApplicationUser user =  _repository.Get(i=>i.Id==id);
+            if (user== null)
+            {
+                return NotFound();
+            }
+
+          
+           _repository.delete(user);
+            user.UserName = "";
+            user.NormalizedUserName = "";
+            _repository.save();
+            return RedirectToAction("RegisteredCustomers");
+
+
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -41,7 +60,7 @@ namespace E_commerce.Controllers
             {
                 ApplicationUser applicationUser = await _userManager.FindByNameAsync(uservm.userName);
 
-                if (applicationUser != null)
+                if (applicationUser != null&&!applicationUser.IsDeleted)
                 {
                     bool found = await _userManager.CheckPasswordAsync(applicationUser, uservm.password);
 
@@ -113,7 +132,7 @@ namespace E_commerce.Controllers
         [Authorize(Roles ="Admin")]
         public IActionResult RegisteredCustomers()
         {
-            List<ApplicationUser> customers = _repository.GetAll().ToList();
+            List<ApplicationUser> customers = _repository.GetAll().Where(c=>c.IsDeleted==false).ToList();
 
             return View(customers);
         }
