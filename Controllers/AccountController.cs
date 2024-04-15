@@ -22,16 +22,16 @@ namespace E_commerce.Controllers
             _repository = appRpo;
 
         }
-        public  IActionResult DeleteUser(string id)
+        public IActionResult DeleteUser(string id)
         {
-            ApplicationUser user =  _repository.Get(i=>i.Id==id);
-            if (user== null)
+            ApplicationUser user = _repository.Get(i => i.Id == id);
+            if (user == null)
             {
                 return NotFound();
             }
 
-          
-           _repository.delete(user);
+
+            _repository.delete(user);
             _repository.save();
             return RedirectToAction("RegisteredCustomers");
 
@@ -58,7 +58,7 @@ namespace E_commerce.Controllers
             {
                 ApplicationUser applicationUser = await _userManager.FindByNameAsync(uservm.userName);
 
-                if (applicationUser != null&&!applicationUser.IsDeleted)
+                if (applicationUser != null && !applicationUser.IsDeleted)
                 {
                     bool found = await _userManager.CheckPasswordAsync(applicationUser, uservm.password);
 
@@ -81,42 +81,78 @@ namespace E_commerce.Controllers
 
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> register(RegisterVm model)
         {
             if (ModelState.IsValid)
             {
-                ApplicationUser applicationUser = new ApplicationUser
+                ApplicationUser existingUser = await _userManager.FindByNameAsync(model.userName);
+
+                if (existingUser != null)
+                {
+                    // Check if the existing user is marked as deleted
+                    if (existingUser.IsDeleted)
+                    {
+                        existingUser.Email = model.email;
+                        existingUser.Address = model.address;
+                        existingUser.IsDeleted = false;
+                        existingUser.PasswordHash = model.password;
+
+                        IdentityResult updateResult = await _userManager.UpdateAsync(existingUser);
+
+                        if (updateResult.Succeeded)
+                        {
+                            
+                            await _signInManager.SignInAsync(existingUser, false);
+                            return RedirectToAction("GetAllCategory", "Category");
+                        }
+                        else
+                        {
+                            foreach (var error in updateResult.Errors)
+                            {
+                                ModelState.AddModelError("", error.Description);
+                            }
+                            return View("register", model);
+                        }
+                    }
+                    else
+                    {
+                        
+                        ModelState.AddModelError("", "A user with this username already exists and is active.");
+                        return View("register", model);
+                    }
+                }
+
+                // If user does not exist, create a new user
+                ApplicationUser newUser = new ApplicationUser
                 {
                     UserName = model.userName,
-                    PasswordHash = model.password,
                     Email = model.email,
                     Address = model.address,
                 };
-                IdentityResult identityResult = await _userManager.CreateAsync(applicationUser, model.password);
 
-                if (identityResult.Succeeded)
+                IdentityResult result = await _userManager.CreateAsync(newUser, model.password);
+
+                if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(applicationUser, "User");
-                    await _signInManager.SignInAsync(applicationUser, false);
-
-
-                    return RedirectToAction("GetAllCategory","Category");
+                    // Optionally, you can add the user to a role here if needed
+                    await _userManager.AddToRoleAsync(newUser, "User");
+                    await _signInManager.SignInAsync(newUser, false);
+                    return RedirectToAction("GetAllCategory", "Category");
                 }
                 else
                 {
-                    foreach (var item in identityResult.Errors)
+                    foreach (var error in result.Errors)
                     {
-
-                        ModelState.AddModelError("", item.Description);
+                        ModelState.AddModelError("", error.Description);
                     }
-
                 }
             }
+
             return View("register", model);
         }
+
 
         public async Task<IActionResult> signOut()
         {
@@ -127,10 +163,10 @@ namespace E_commerce.Controllers
 
 
         // for trials only
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult RegisteredCustomers()
         {
-            List<ApplicationUser> customers = _repository.GetAll().Where(c=>c.IsDeleted==false).ToList();
+            List<ApplicationUser> customers = _repository.GetAll().Where(c => c.IsDeleted == false).ToList();
 
             return View(customers);
         }
