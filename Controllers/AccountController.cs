@@ -32,8 +32,6 @@ namespace E_commerce.Controllers
 
           
            _repository.delete(user);
-            user.UserName = "";
-            user.NormalizedUserName = "";
             _repository.save();
             return RedirectToAction("RegisteredCustomers");
 
