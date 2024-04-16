@@ -1,7 +1,6 @@
 ﻿using E_commerce.Models;
 using E_commerce.Repository;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace E_commerce_MVC.Repository
 {
@@ -40,8 +39,8 @@ namespace E_commerce_MVC.Repository
 
         public List<Cart> GetAllbyCustomerId(string id)
         {
-            List<Cart> CartList = context.Carts.
-                Where(item => item.Customer_Id == id && item.IsDeleted == false).ToList();
+            List<Cart> CartList = context.Carts.Include(c => c.product)
+                .Where(item => item.Customer_Id == id && item.IsDeleted == false).ToList();
             return CartList;
         }
 
@@ -49,6 +48,17 @@ namespace E_commerce_MVC.Repository
         {
             var item = context.Carts.FirstOrDefault(p => p.Product_Id == id);
             context.Carts.Remove(item);
+        }
+
+        public double GetTotalPrice(string customerId)
+        {
+            double totalPrice = 0;
+            foreach (Cart cartItem in GetAllbyCustomerId(customerId))
+            {
+                totalPrice += (cartItem.product.Price * cartItem.Quantity);
+            }
+
+            return totalPrice;
         }
     }
 }

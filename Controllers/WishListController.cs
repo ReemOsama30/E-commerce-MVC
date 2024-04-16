@@ -3,10 +3,6 @@ using E_commerce_MVC.Repository;
 using E_commerce_MVC.viewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace E_commerce_MVC.Controllers
 {
@@ -23,7 +19,7 @@ namespace E_commerce_MVC.Controllers
             this.userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(string id, int page = 1, int pageSize = 4)
+        public async Task<IActionResult> Index(string id, int page = 1, int pageSize = 5)
         {
             List<WishList> wishLists = wishListRepository.GetAllbyCustomerId(id);
             int totalItems = wishLists.Count;
@@ -69,7 +65,7 @@ namespace E_commerce_MVC.Controllers
             }
             return RedirectToAction("Index", new { id = wishList.Customer_Id });
         }
-    
+
 
 
         //public ActionResult Remove(int id)
