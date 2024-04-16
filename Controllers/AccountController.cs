@@ -156,6 +156,8 @@ namespace E_commerce.Controllers
 
         public async Task<IActionResult> signOut()
         {
+            // Added by MAi
+            HttpContext.Session.Clear();
             await _signInManager.SignOutAsync();
             return RedirectToAction("login");
         }

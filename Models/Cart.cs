@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using E_commerce_MVC.interfaces;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace E_commerce.Models
 {
-    public class Cart
+    public class Cart: ISoftDeletable
     {
         public int Id { get; set; }
         public int Quantity { get; set; }
