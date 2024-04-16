@@ -25,7 +25,7 @@ namespace E_commerce_MVC
             });
 
 
-
+            builder.Services.AddScoped<ICartRepository, CartRepositry>();
             builder.Services.AddScoped<IWishListRepository, WishListRepository>();
             builder.Services.AddScoped<IRepository<ApplicationUser>, Repository<ApplicationUser>>();
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -38,7 +38,12 @@ namespace E_commerce_MVC
 
 
             builder.Services.AddSignalR();
-
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
             var app = builder.Build();
 
@@ -52,7 +57,7 @@ namespace E_commerce_MVC
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseSession();
             app.UseRouting();
             app.UseAuthentication();
 

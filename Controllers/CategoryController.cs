@@ -1,7 +1,11 @@
 ﻿using E_commerce.Models;
 using E_commerce_MVC.Repository;
+using E_commerce_MVC.Utility;
 using E_commerce_MVC.viewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace E_commerce_MVC.Controllers
 {
@@ -13,12 +17,18 @@ namespace E_commerce_MVC.Controllers
         private readonly IProductRepository ProductRepository;
         private readonly ICategoryRepository CategoryRepository;
         private readonly IWebHostEnvironment webHostEnvironment;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly Context _context;
 
-        public CategoryController(IProductRepository ProductRepository, ICategoryRepository CategoryRepository,IWebHostEnvironment webHostEnvironment)
+        public CategoryController(Context context,IProductRepository ProductRepository, ICategoryRepository CategoryRepository,IWebHostEnvironment webHostEnvironment, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
         {
             this.ProductRepository = ProductRepository;
             this.CategoryRepository = CategoryRepository;
             this.webHostEnvironment = webHostEnvironment;
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _context = context;
         }
 
 
@@ -30,6 +40,16 @@ namespace E_commerce_MVC.Controllers
 
         public IActionResult GetAllCategory()
         {
+            // Added by MAi
+            var claim = _signInManager.IsSignedIn(User);
+            if (claim)
+            {
+                // if the user signed in
+                var userId = _userManager.GetUserId(User);
+                var count = _context.Carts.Where(u => u.Customer_Id.Contains(userId) && !u.IsDeleted).Count();
+
+                HttpContext.Session.SetInt32(CartCount.sessionCount, count);
+            }
             List<Category> categories = (List<Category>)CategoryRepository.GetAllCategories();
             List<Product> latestProductsInCategories = (List<Product>)ProductRepository.GetLatestProduct();
             ListOfProductAndListOfCategory ListOfProductAndListOfCategory = new ListOfProductAndListOfCategory();

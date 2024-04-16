@@ -1,4 +1,8 @@
 ﻿@using System.Security.Claims
+@using E_commerce_MVC.Utility
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
 <!doctype html>
 <html class="no-js" lang="zxx">
 <head>
@@ -29,8 +33,7 @@
 
 </head>
 <body style="width:100%">
-    @* class="full-wrapper" *@
-    <!-- ? Preloader Start -->
+    <!-- Preloader Start -->
     <div id="preloader-active">
         <div class="preloader d-flex align-items-center justify-content-center">
             <div class="preloader-inner position-relative">
@@ -41,11 +44,10 @@
             </div>
         </div>
     </div>
-    <!-- Preloader Start-->
+    <!-- Preloader End -->
     <header>
-
         <!-- Header Start -->
-        <div class="header-area ">
+        <div class="header-area">
             <div class="main-header header-sticky">
                 <div class="container-fluid">
                     <div class="menu-wrapper d-flex align-items-center justify-content-between">
@@ -56,38 +58,55 @@
                             </div>
                             <!-- Main-menu -->
                             <partial name="_NavPartial" />
+
+                        </div> <!-- Missing closing tag here -->
                         <div class="header-right1 d-flex align-items-center">
                             <!-- Social -->
+                            <!-- Social -->
                             <div class="header-social d-none d-md-block">
-                                    @{
-                                        var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                                    }
-
-                                    @if (User.Identity.IsAuthenticated == true)
-
-
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                                    <a asp-controller="WishList" asp-action="Index" asp-route-id="@id" title="Wishlist">
+                                        <i class="fa fa-heart"></i>
+                                    </a>
+                                }
+                                <!-- Search Box -->
+                                <div class="search d-none d-md-block">
+                                    <ul class="d-flex align-items-center">
+                                        <li class="mr-15">
+                                            <div class="nav-search search-switch">
+                                                <i class="ti-search"></i>
+                                            </div>
+                                        </li>
+                                       
+                                    </ul>
+                                    @if (HttpContextAccessor.HttpContext.Session.GetInt32(CartCount.sessionCount) != null)
                                     {
-                                        <a href="@Url.Action("Index", "WishList", new { id = id })" title="Wishlist">
-                                            <i class="fa fa-heart"></i>
-                                        </a>}
-                                        </div>
-                                    
-                                    <!-- Search Box -->
-                            <div class="search d-none d-md-block">
-                                <ul class="d-flex align-items-center">
-                                    <li class="mr-15">
-                                        <div class="nav-search search-switch">
-                                            <i class="ti-search"></i>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="card-stor">
-                                            <img src="/img/gallery/card.svg" alt="">
-                                            <span>0</span>
-                                        </div>
-                                    </li>
-                                </ul>
+                                        var count = HttpContextAccessor.HttpContext.Session.GetInt32(CartCount.sessionCount);
+                                        <li class="nav-item">
+                                            <a asp-controller="Cart" asp-action="Index" class="nav-link">
+                                                <div class="card-stor">
+                                                    <img src="/img/gallery/card.svg" alt="">
+                                                    <span>(@count)</span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li>
+                                            <div class="card-stor">
+                                                <img src="/img/gallery/card.svg" alt="">
+                                                <span>0</span>
+                                            </div>
+                                        </li>
+                                    }
+                                </div>
                             </div>
+
+                            </div>
+                           
                         </div>
                         <!-- Mobile Menu -->
                         <div class="col-12">
@@ -102,7 +121,6 @@
     <!-- header end -->
     @RenderBody()
 
-    
     <!-- JS here -->
     <!-- Jquery, Popper, Bootstrap -->
     <script src="/js/vendor/modernizr-3.5.0.min.js"></script>
@@ -147,8 +165,5 @@
     {
         @RenderSection("Scripts", required: false)
     }
-
-
-
 </body>
 </html>
