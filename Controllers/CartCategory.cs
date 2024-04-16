@@ -5,8 +5,6 @@ using E_commerce_MVC.viewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace E_commerce_MVC.Controllers
 {
@@ -180,6 +178,57 @@ namespace E_commerce_MVC.Controllers
             HttpContext.Session.SetInt32(CartCount.sessionCount, count);
 
             return RedirectToAction("Index", new { id = cartItem?.Customer_Id });
+        }
+        public IActionResult AddToCartFromWishList(int productId)
+        {
+            var productAddToCart = _productRepository.Get(p => p.Id == productId);
+            var checkIfUserSignedInOrNot = _signInManager.IsSignedIn(User);
+            if (checkIfUserSignedInOrNot)
+            {
+                // User Signed in
+                // Get User Id
+                var user = _userManager.GetUserId(User);
+                if (user != null)
+                {
+                    // check if the signed user has any cart or not
+                    var getTheCartIfAnyExistForTheUser = _cartRepositry.CountCartForUser(user);
+                    if (getTheCartIfAnyExistForTheUser.Count() > 0)
+                    {
+                        // check if the item is already in the cart or not
+                        var getTheQuantity = _cartRepositry.CheckIfTheProductExists(productId, user);
+                        if (getTheQuantity != null)
+                        {
+                            // if the item is already in the cart just increase the quantity by 1 and update the cart
+                            getTheQuantity.Quantity = getTheQuantity.Quantity + 1;
+                            _cartRepositry.update(getTheQuantity);
+                        }
+                        else
+                        {
+                            Cart newItemToCart = new Cart
+                            {
+                                Product_Id = productId,
+                                Customer_Id = user,
+                                Quantity = 1
+                            };
+                            _cartRepositry.insert(newItemToCart);
+                        }
+                    }
+                    else
+                    {
+                        Cart newItemToCart = new Cart
+                        {
+                            Product_Id = productId,
+                            Customer_Id = user,
+                            Quantity = 1
+                        };
+                        _cartRepositry.insert(newItemToCart);
+                    }
+                    _cartRepositry.save();
+                    var count = _cartRepositry.CountItems(user);
+                    HttpContext.Session.SetInt32(CartCount.sessionCount, count);
+                }
+            }
+            return Json(new { success = true });
         }
 
     }

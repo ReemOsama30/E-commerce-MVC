@@ -30,52 +30,52 @@ namespace E_commerce_MVC.Controllers
 
 
         //////
-      
 
-            //dina controllers
 
-            public IActionResult GetAllProducts()
+        //dina controllers
+
+        public IActionResult GetAllProducts()
+        {
+            List<Product> products = (List<Product>)ProductRepository.GetAll();
+            return View("GetAllProducts", products);
+        }
+
+        public IActionResult GetProductsByCategoryId(int CategoryId)
+        {
+            List<string> productNames = ProductRepository.GetProductNamesByCatId(CategoryId);
+            List<string> productImages = ProductRepository.GetProductImagesByCatId(CategoryId);
+            List<double> productPrices = ProductRepository.GetProductPricesByCatId(CategoryId);
+            List<int> productIds = ProductRepository.GetProductIDsByCatId(CategoryId);
+
+            List<Product> products = ProductRepository.GetProductsByCatgoryId(CategoryId);
+
+            string CategoryName = CategoryRepository.GetName(CategoryId);
+
+            ProductPartViewModel productPartViewModel = new ProductPartViewModel()
             {
-                List<Product> products = (List<Product>)ProductRepository.GetAll();
-                return View("GetAllProducts", products);
-            }
+                CategoryId = CategoryId,
+                CategoryName = CategoryName,
+                Products = products,
 
-            public IActionResult GetProductsByCategoryId(int CategoryId)
-            {
-                List<string> productNames = ProductRepository.GetProductNamesByCatId(CategoryId);
-                List<string> productImages = ProductRepository.GetProductImagesByCatId(CategoryId);
-                List<double> productPrices = ProductRepository.GetProductPricesByCatId(CategoryId);
-                List<int> productIds = ProductRepository.GetProductIDsByCatId(CategoryId);
+                Price = productPrices,
+                ProductNames = productNames,
+                ProductsId = productIds
+            };
 
-                List<Product> products = ProductRepository.GetProductsByCatgoryId(CategoryId);
+            return View("GetProductsByCategoryId", productPartViewModel);
+        }
 
-                string CategoryName = CategoryRepository.GetName(CategoryId);
+        //Get latest product in each category
+        //public IActionResult GetLatestProduct()
+        //{
+        //    List<Product> latestProductsInCategories = (List<Product>)ProductRepository.GetLatestProduct();
+        //    ViewBag.Products = latestProductsInCategories;
+        //    return View("_GetLatestProduct");
 
-                ProductPartViewModel productPartViewModel = new ProductPartViewModel()
-                {
-                    CategoryId = CategoryId,
-                    CategoryName = CategoryName,
-                    Products = products,
-
-                    Price = productPrices,
-                    ProductNames = productNames,
-                    ProductsId = productIds
-                };
-
-                return View("GetProductsByCategoryId", productPartViewModel);
-            }
-
-            //Get latest product in each category
-            //public IActionResult GetLatestProduct()
-            //{
-            //    List<Product> latestProductsInCategories = (List<Product>)ProductRepository.GetLatestProduct();
-            //    ViewBag.Products = latestProductsInCategories;
-            //    return View("_GetLatestProduct");
-
-            //}
+        //}
 
 
-    //////
+        //////
 
 
 
@@ -83,7 +83,7 @@ namespace E_commerce_MVC.Controllers
 
 
 
-    public IActionResult show()
+        public IActionResult show()
         {
             List<Product> newproduct = ProductRepository.GetAll().ToList();
 
@@ -166,6 +166,11 @@ namespace E_commerce_MVC.Controllers
             WishList wishList = new WishList();
             wishList.Customer_Id = CurrentUserId;
             wishList.Product_Id = product.Id;
+            bool found = wishListRepository.ExistOrNot(ProductId);
+            if (found == true)
+            {
+                return RedirectToAction("Index", "WishList", new { id = CurrentUserId });
+            }
             wishListRepository.insert(wishList);
             wishListRepository.save();
             return RedirectToAction("Index", "WishList", new { id = CurrentUserId });
