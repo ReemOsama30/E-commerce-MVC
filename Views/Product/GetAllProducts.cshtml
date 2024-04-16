@@ -145,7 +145,7 @@
                                                 </div>
                                             </div>
                                             <div class="popular-caption">
-                                                <h3><a href="/Product/Details">@p.Name</a></h3>
+                                                <h3><a href="/Product/Details?id=@p.Id">@p.Name</a></h3>
                                                 <div class="rating mb-10">
                                                     <i class="fas fa-star"></i>
                                                     <i class="fas fa-star"></i>
@@ -155,9 +155,10 @@
                                                 </div>
                                                 <span>@p.Price</span>
                                                 <div>
-                                                    <a asp-controller="Cart" asp-action="AddToCart" asp-route-productId="@p.Id" class="btn btn-info">Add To Cart</a>
-                                                    <a asp-action="AddToWishList" asp-route-Id="@p.Id" class="btn btn-info">Add To WishingList</a>
-                                                </div>
+                                                    <a asp-controller="Cart" asp-action="AddToCart" asp-route-productId="@p.Id" class="btn ">Add To Cart</a>
+                                                    <a asp-controller="Product" asp-action="AddToWishList" asp-route-productId="@p.Id" class="btn ">Add To WishingList</a>
+@*                                                     <a asp-action="AddToWishList" asp-route-Id="@p.Id" class="btn btn-info">Add To WishingList</a>
+ *@                                                </div>
                                             </div>
                                         </div>
                                     </div>

@@ -47,7 +47,9 @@
                     <td class="text-center">$@Model.Price[i]</td>
                     <td class="text-center">@Model.Stock[i]</td>
                     <td class="text-center">
-                        <a class="btn btn-info" asp-action="AddToCart" asp-controller="Cart">Add To Cart</a>
+@*                         <a class="btn btn-info" asp-action="AddToCart" asp-controller="Cart" asp-route-productId="@Model.ProductId[i]">Add To Cart</a>
+ *@                        <a asp-controller="Cart" asp-action="AddToCart" asp-route-productId="@Model.ProductId[i]" class="btn ">Add To Cart</a>
+
                     </td>
                 </tr>
             }

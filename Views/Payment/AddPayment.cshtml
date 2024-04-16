@@ -36,7 +36,7 @@
 
     .custom-input {
         height: 40px;
-        padding: 10px;
+      
     }
 
 </style>
@@ -71,14 +71,22 @@
                             </div>
                             <span asp-validation-for="Method" class="text-danger"></span>
                             <br />
-                            <div class="row">
-                                <div class="form-group big-label col-md-8" style="display: flex; justify-content: space-between; align-items: center;">
-                                    <label asp-for="Amount" class="control-label" style="margin-right: 15px;">Amount</label>
-                                    <input asp-for="Amount" class="form-control custom-input form-control-lg big-label">
+                            <div class="form-group row">
+                                <label class="control-label col-md-4">Total Amount: </label>
+                                <div>
+                                    <input asp-for="@ViewData["TotalAmount"]" class="form-control custom-input big-label" readonly>
+                                    <span asp-validation-for="Amount" class="text-danger ml-2"></span>
                                 </div>
-                                <span asp-validation-for="Amount" class="text-danger" style="margin-left:15px"></span>
-
                             </div>
+
+
+
+
+                          
+
+                           @*  <p>@ViewData["TotalAmount"]</p> *@
+                          
+
                         </div>
                        
 
@@ -114,3 +122,5 @@
 
     }
 }
+
+@await Html.PartialAsync("_footer");

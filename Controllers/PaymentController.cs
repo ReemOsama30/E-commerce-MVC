@@ -1,5 +1,6 @@
 ﻿using E_commerce.Models;
 using E_commerce.Repository;
+using E_commerce_MVC.Repository;
 using E_commerce_MVC.viewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,17 +13,18 @@ namespace E_commerce_MVC.Controllers
 
         private readonly IRepository<Payment> repository;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly ICartRepository cartRepository;
 
-
-        public PaymentController(IRepository<Payment> repository, UserManager<ApplicationUser> userManager)
+        public PaymentController(IRepository<Payment> repository, UserManager<ApplicationUser> userManager, ICartRepository cartRepository)
         {
             this.repository = repository;
             this.userManager = userManager;
+            this.cartRepository = cartRepository;
         }
 
         //for admin ya reem
         // [Authorize(Roles = "admin")]
-        public IActionResult Index(int page = 1, int pageSize = 2)
+        public IActionResult Index(int page = 1, int pageSize = 5)
         {
 
             var payments = repository.GetAll();
@@ -38,7 +40,9 @@ namespace E_commerce_MVC.Controllers
         // [Authorize]
         public IActionResult AddPayment()
         {
-
+            var customerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var totalAmount = cartRepository.GetTotalPrice(customerId);
+            ViewData["TotalAmount"] = totalAmount;
             return View("AddPayment");
         }
 
@@ -50,17 +54,18 @@ namespace E_commerce_MVC.Controllers
 
                 //must be login
                 var customerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
+                var totalAmount = cartRepository.GetTotalPrice(customerId);
                 var payment = new Payment
                 {
                     Date = DateTime.Now,
                     Method = paymentVm.Method,
-                    Amount = paymentVm.Amount,
+                    Amount = totalAmount,
                     Customer_Id = customerId
 
                 };
                 repository.insert(payment);
                 repository.save();
+
                 return RedirectToAction("End");
             }
 
