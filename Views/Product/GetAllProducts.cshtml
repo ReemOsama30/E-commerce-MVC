@@ -155,7 +155,7 @@
                                                 </div>
                                                 <span>@p.Price</span>
                                                 <div>
-                                                    <a asp-action="AddToCart" asp-route-Id="@p.Id" class="btn btn-info">Add To Cart</a>
+                                                    <a asp-controller="Cart" asp-action="AddToCart" asp-route-productId="@p.Id" class="btn btn-info">Add To Cart</a>
                                                     <a asp-action="AddToWishList" asp-route-Id="@p.Id" class="btn btn-info">Add To WishingList</a>
                                                 </div>
                                             </div>
