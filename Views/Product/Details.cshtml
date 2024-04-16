@@ -8,6 +8,7 @@
     string userid = ViewData["UserId"] as string;
 
     //  var comments = ViewData["Comments"] as List<Comment>;
+   
 }
 
 
@@ -26,6 +27,7 @@
               
                 <div class="card-body">
                     <h2 class="card-title">@product.Name</h2>
+
                     <img src="/img/gallery/@product.Image_Url" style="width: 200px; height: 200px;" />
 
                     <br />
@@ -54,14 +56,14 @@
 
         <div class="col-md-6">
             <h1>Welcome, @username!</h1>
-            <input type="text" class="form form-control" placeholder="PLZ Leave Your Comment" id="Comment" style="width:400px;height:35px" />
+            <input type="text" class="form form-control" placeholder="Leave Your Comment..." id="Comment" style="width:400px;height:35px" />
 
-            <span class="text-warning">
-                <i class="ratingStar far fa-star" data-rating="1" style="display:inline-block;margin-top:20px"></i>
-                <i class="ratingStar far fa-star" data-rating="2" style="display:inline-block; margin-top:20px"></i>
-                <i class="ratingStar far fa-star" data-rating="3" style="display:inline-block; margin-top:20px"></i>
-                <i class="ratingStar far fa-star" data-rating="4" style="display:inline-block; margin-top:20px"></i>
-                <i class="ratingStar far fa-star" data-rating="5" style="display:inline-block; margin-top:20px"></i>
+            <span class="text-warning" style="font-size: 24px;">
+                <i class="ratingStar far fa-star" data-rating="1" style="display:inline-block;margin-top:20px; padding:5px"></i>
+                <i class="ratingStar far fa-star" data-rating="2" style="display:inline-block; margin-top:20px; padding:5px"></i>
+                <i class="ratingStar far fa-star" data-rating="3" style="display:inline-block; margin-top:20px; padding:5px"></i>
+                <i class="ratingStar far fa-star" data-rating="4" style="display:inline-block; margin-top:20px; padding:5px"></i>
+                <i class="ratingStar far fa-star" data-rating="5" style="display:inline-block; margin-top:20px; padding:5px"></i>
             </span>
             <br>
             <input type="hidden" name="Rating" id="ratingsValue" />
@@ -82,7 +84,9 @@
                 {
                     <li style="font-size:18px">
                         <div style="display: flex; justify-content: space-between;">
-                            <span>@comment.applicationUser.UserName : @comment.Text</span>
+                                <span style="max-width: 75%; overflow-wrap: break-word;">
+                                    @comment.applicationUser.UserName : @comment.Text
+                                </span>
                             
 
                             <div style="text-align: right;">
@@ -94,6 +98,7 @@
 
                           
                         </div>
+                            <hr />
                     </li>
 
                 }
@@ -162,7 +167,9 @@
                     stars += "<i class='text-warning far fa-star'></i>";
                 }
             }
-            var commentHtml = "<li style=\"font-size:18px;\"><div style=\"display: flex; justify-content: space-between;\"><span>" + username + ": " + comment + "</span><div style=\"text-align: right;\">" + stars + "</div></div></li>";
+            var commentHtml = "<div class='comment-container'><li style=\"font-size:18px;\"><div style=\"display: flex; justify-content: space-between;\">" +
+                "<span style='max-width: 80%; overflow-wrap: break-word;'>" + username + ": " + comment + "</span>" +
+                "<div style=\"text-align: right;\">" + stars + "</div></div></li></div><hr>";
             $("#AllComment").append(commentHtml);
         }
     });
@@ -187,3 +194,5 @@
 
    
 </script>
+@await Html.PartialAsync("_footer");
+

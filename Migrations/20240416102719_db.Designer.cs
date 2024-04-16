@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_commerce_MVC.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20240411192800_db")]
+    [Migration("20240416102719_db")]
     partial class db
     {
         /// <inheritdoc />
@@ -149,6 +149,29 @@ namespace E_commerce_MVC.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsDeleted = false,
+                            Name = "Top",
+                            imageURL = "arrival1.png"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IsDeleted = false,
+                            Name = "bottom",
+                            imageURL = "arrival2.png"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IsDeleted = false,
+                            Name = "dress",
+                            imageURL = "arrival3.png"
+                        });
                 });
 
             modelBuilder.Entity("E_commerce.Models.Order", b =>

@@ -21,7 +21,7 @@ namespace E_commerce_MVC.Controllers
 
         //for admin ya reem
         // [Authorize(Roles = "admin")]
-        public IActionResult Index(int page = 1, int pageSize = 2)
+        public IActionResult Index(int page = 1, int pageSize = 5)
         {
             var shipments = repository.GetAll();
             var users = userManager.Users.ToList();

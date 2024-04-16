@@ -146,6 +146,29 @@ namespace E_commerce_MVC.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsDeleted = false,
+                            Name = "Top",
+                            imageURL = "arrival1.png"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IsDeleted = false,
+                            Name = "bottom",
+                            imageURL = "arrival2.png"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IsDeleted = false,
+                            Name = "dress",
+                            imageURL = "arrival3.png"
+                        });
                 });
 
             modelBuilder.Entity("E_commerce.Models.Order", b =>
@@ -261,10 +284,6 @@ namespace E_commerce_MVC.Migrations
                     b.Property<int>("Category_Id")
                         .HasColumnType("int");
 
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -284,9 +303,6 @@ namespace E_commerce_MVC.Migrations
                         .HasColumnType("float");
 
                     b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Size")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

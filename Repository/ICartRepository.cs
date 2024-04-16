@@ -17,5 +17,8 @@ namespace E_commerce_MVC.Repository
 
         public void Remove(int id);
 
+        public double GetTotalPrice(string customerId);
+
+
     }
 }
