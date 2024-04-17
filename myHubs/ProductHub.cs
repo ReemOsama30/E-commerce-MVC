@@ -7,20 +7,20 @@ namespace E_commerce_MVC.myHubs
 {
     public class ProductHub : Hub
     {
-        private readonly Context _context;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly Context context;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public ProductHub(Context context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;
-            _userManager = userManager;
+            this.context = context;
+            this.userManager = userManager;
         }
 
         public async Task WriteComment(string text, int product_id, int rating)
         {
 
-            var currentUser = await _userManager.GetUserAsync(Context.User);
-            string username = currentUser.UserName; // Get the username
+            var currentUser = await userManager.GetUserAsync(Context.User);
+            string username = currentUser.UserName;
 
 
             var newComment = new Comments
@@ -32,8 +32,8 @@ namespace E_commerce_MVC.myHubs
             };
 
 
-            _context.Comments.Add(newComment);
-            await _context.SaveChangesAsync();
+            context.Comments.Add(newComment);
+            await context.SaveChangesAsync();
 
 
             await Clients.All.SendAsync("ReciveNewComment", text, product_id, rating, username);
