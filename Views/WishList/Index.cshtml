@@ -47,8 +47,9 @@
                     <td class="text-center">$@Model.Price[i]</td>
                     <td class="text-center">@Model.Stock[i]</td>
                     <td class="text-center">
-@*                         <a class="btn btn-info" asp-action="AddToCart" asp-controller="Cart" asp-route-productId="@Model.ProductId[i]">Add To Cart</a>
- *@                        <a asp-controller="Cart" asp-action="AddToCart" asp-route-productId="@Model.ProductId[i]" class="btn ">Add To Cart</a>
+                        @* <a class="btn btn-info" asp-action="AddToCart" asp-controller="Cart" asp-route-productId="@Model.ProductId[i]">Add To Cart</a> *@
+                        @* <a asp-controller="Cart" asp-action="AddToCart" asp-route-productId="@Model.ProductId[i]" class="btn ">Add To Cart</a>  *@
+                        <a href="#" class="btn btn-add-to-cart" data-productid="@Model.ProductId[i]">Add To Cart</a>
 
                     </td>
                 </tr>
@@ -74,6 +75,33 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.12/signalr.min.js"></script>
 
 <script>
+    $(document).ready(function () {
+        $(".btn-add-to-cart").click(function (e) {
+            e.preventDefault(); 
+
+            var productId = $(this).data("productid");
+
+            
+            $.ajax({
+                url: '/Cart/AddToCartFromWishList', 
+                method: 'POST',
+                data: { productId: productId }, 
+                success: function (response) {
+                    if (response.success) {
+                        alert("Product added to cart successfully!");
+                    } else {
+                        alert("Failed to add product to cart. Please try again.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                    alert("Failed to add product to cart. Please try again.");
+                }
+            });
+        });
+    });
+
+
     $(document).ready(function () {
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/whishlistHub")
@@ -119,3 +147,7 @@
         });
     });
 </script>
+<br />
+<br />
+<br />
+@await Html.PartialAsync("_footer");

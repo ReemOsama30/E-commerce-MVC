@@ -18,7 +18,7 @@ namespace E_commerce_MVC.Controllers
             this.productRepository = productRepository;
             this.userManager = userManager;
         }
-
+        //[Authorize]
         public async Task<IActionResult> Index(string id, int page = 1, int pageSize = 5)
         {
             List<WishList> wishLists = wishListRepository.GetAllbyCustomerId(id);

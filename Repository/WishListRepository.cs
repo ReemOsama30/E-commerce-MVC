@@ -1,5 +1,6 @@
 ﻿using E_commerce.Models;
 using E_commerce.Repository;
+using Microsoft.CodeAnalysis;
 
 namespace E_commerce_MVC.Repository
 {
@@ -14,6 +15,11 @@ namespace E_commerce_MVC.Repository
             List<WishList> wishLists = context.WishLists.
                 Where(item => item.Customer_Id == id && item.IsDeleted == false).ToList();
             return wishLists;
+        }
+        public bool ExistOrNot(int productid)
+        {
+            bool found = context.WishLists.Any(w => w.Product_Id == productid);
+            return found;
         }
 
         public void HardDelete(WishList wishList)
