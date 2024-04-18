@@ -1,6 +1,12 @@
 ﻿@using System.Security.Claims
-@using E_commerce_MVC.Utility
-@using Microsoft.AspNetCore.Http
+﻿@using E_commerce.Models;
+@using E_commerce_MVC.Repository;
+@using E_commerce_MVC.Utility;
+@using E_commerce_MVC.viewModels;
+@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Identity;
+@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.EntityFrameworkCore;
 @inject IHttpContextAccessor HttpContextAccessor
 
 <!doctype html>
@@ -33,7 +39,8 @@
 
 </head>
 <body style="width:100%">
-    <!-- Preloader Start -->
+    @* class="full-wrapper" *@
+    <!-- ? Preloader Start -->
     <div id="preloader-active">
         <div class="preloader d-flex align-items-center justify-content-center">
             <div class="preloader-inner position-relative">
@@ -44,10 +51,11 @@
             </div>
         </div>
     </div>
-    <!-- Preloader End -->
+    <!-- Preloader Start-->
     <header>
+
         <!-- Header Start -->
-        <div class="header-area">
+        <div class="header-area ">
             <div class="main-header header-sticky">
                 <div class="container-fluid">
                     <div class="menu-wrapper d-flex align-items-center justify-content-between">
@@ -58,19 +66,23 @@
                             </div>
                             <!-- Main-menu -->
                             <partial name="_NavPartial" />
+                            <div class="header-right1 d-flex align-items-center">
+                                <!-- Social -->
+                                <div class="header-social d-none d-md-block">
+                                    @{
+                                        var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                                    }
 
-                        </div> <!-- Missing closing tag here -->
-                        <div class="header-right1 d-flex align-items-center">
-                            <!-- Social -->
-                            <!-- Social -->
-                            <div class="header-social d-none d-md-block">
-                                @if (User.Identity.IsAuthenticated)
-                                {
-                                    var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                                    <a asp-controller="WishList" asp-action="Index" asp-route-id="@id" title="Wishlist">
-                                        <i class="fa fa-heart"></i>
-                                    </a>
-                                }
+                                    @if (User.Identity.IsAuthenticated == true)
+
+
+                                    {
+                                        <a href="@Url.Action("Index", "WishList", new { id = id })" title="Wishlist">
+                                            <i class="fa fa-heart"></i>
+                                        </a>
+                                    }
+                                </div>
+
                                 <!-- Search Box -->
                                 <div class="search d-none d-md-block">
                                     <ul class="d-flex align-items-center">
@@ -79,47 +91,45 @@
                                                 <i class="ti-search"></i>
                                             </div>
                                         </li>
-                                       
-                                    </ul>
-                                    @if (HttpContextAccessor.HttpContext.Session.GetInt32(CartCount.sessionCount) != null)
-                                    {
-                                        var count = HttpContextAccessor.HttpContext.Session.GetInt32(CartCount.sessionCount);
-                                        <li class="nav-item">
-                                            <a asp-controller="Cart" asp-action="Index" class="nav-link">
+                                        <li>
+                                            @if (HttpContextAccessor.HttpContext.Session.GetInt32(CartCount.sessionCount) != null)
+                                            {
+                                                var count = HttpContextAccessor.HttpContext.Session.GetInt32(CartCount.sessionCount);
+                                            <li class="nav-item">
+                                                <a asp-controller="Cart" asp-action="Index" class="nav-link">
+                                                    <div class="card-stor">
+                                                        <img src="/img/gallery/card.svg" alt="">
+                                                        <span>(@count)</span>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            }
+                                            else
+                                            {
+                                            <li>
                                                 <div class="card-stor">
                                                     <img src="/img/gallery/card.svg" alt="">
-                                                    <span>(@count)</span>
+                                                    <span>0</span>
                                                 </div>
-                                            </a>
+                                            </li>
+                                            }
                                         </li>
-                                    }
-                                    else
-                                    {
-                                        <li>
-                                            <div class="card-stor">
-                                                <img src="/img/gallery/card.svg" alt="">
-                                                <span>0</span>
-                                            </div>
-                                        </li>
-                                    }
+                                    </ul>
                                 </div>
                             </div>
-
+                            <!-- Mobile Menu -->
+                            <div class="col-12">
+                                <div class="mobile_menu d-block d-lg-none"></div>
                             </div>
-                           
-                        </div>
-                        <!-- Mobile Menu -->
-                        <div class="col-12">
-                            <div class="mobile_menu d-block d-lg-none"></div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Header End -->
+            <!-- Header End -->
     </header>
     <!-- header end -->
     @RenderBody()
+
 
     <!-- JS here -->
     <!-- Jquery, Popper, Bootstrap -->
@@ -139,7 +149,7 @@
     <script src="/js/jquery.magnific-popup.js"></script>
     <script src="/js/gijgo.min.js"></script>
 
-    <!-- Nice-select, sticky,Progress -->
+    <!-- Nice-select, sticky,Progress 
     <script src="/js/jquery.nice-select.min.js"></script>
     <script src="/js/jquery.sticky.js"></script>
     <script src="/js/jquery.barfiller.js"></script>
@@ -165,5 +175,8 @@
     {
         @RenderSection("Scripts", required: false)
     }
+
+
+
 </body>
 </html>
