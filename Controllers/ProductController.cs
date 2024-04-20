@@ -127,7 +127,7 @@ namespace E_commerce_MVC.Controllers
                 ProductRepository.save();
 
 
-                return RedirectToAction("show");
+                return RedirectToAction("GetAllProducts");
             }
 
             newProduct.Category = CategoryRepository.GetAll().ToList();

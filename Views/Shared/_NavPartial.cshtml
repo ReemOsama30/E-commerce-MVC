@@ -1,4 +1,4 @@
-﻿﻿<div class="main-menu  d-none d-lg-block">
+﻿<div class="main-menu  d-none d-lg-block">
     <nav>
         <ul id="navigation">
             @if (!User.Identity.IsAuthenticated)
@@ -14,20 +14,21 @@
 
                 <li><a asp-action="getallcategory" asp-controller="category">Home</a></li>
                 <li><a asp-action="GetAllProducts" asp-controller="Product">shop</a></li>
-                <li><a href="about.html">About</a></li>
+               
                 @if (User.IsInRole("Admin") == true)
                 {
-                    <li><a href="/Account/RegisteredCustomers">Registered Details</a></li>
+                    <li><a href="/Account/RegisteredCustomers">Registered</a></li>
+                    <li><a asp-action="addnewproduct" asp-controller="Product">Add Product</a></li>
+                    <li><a asp-action="addnewcategory" asp-controller="Category">Add Category</a></li>
                 }
                 <li><a href="/Account/signout">log out</a></li>
-                <li><a href="/product/GetAllproducts">All Products</a></li>
+                @* <li><a href="/product/GetAllproducts">All Products</a></li> *@
                 <li>
-                    <a href="blog.html">Blog</a>
+                    <a href="blog.html">Details</a>
                     <ul class="submenu">
-                        <li><a href="blog.html">Blog</a></li>
-                        <li><a href="blog_details.html">Blog Details</a></li>
-                        <li><a href="elements.html">Elements</a></li>
-                        <li><a href="product_details.html">Product Details</a></li>
+                        <li><a href="/shipment/index">Shipment Details</a></li>
+                        <li><a href="/payment/index">Payment Details</a></li>
+                       
 
 
                 </li>

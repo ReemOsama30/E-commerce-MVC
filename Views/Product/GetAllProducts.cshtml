@@ -46,21 +46,21 @@
                         <div class="single-listing">
                             <!-- Select City items start -->
                             <div class="select-job-items2">
-                                <select name="CategoryId" id="categoryId" class="form-control">
+                               @*  <select name="CategoryId" id="categoryId" class="form-control">
                                     <option value="0">All Categories</option>
                                     <option value="1">Shirt</option>
                                     <option value="2">T-shirt</option>
                                     <option value="3">Bants</option>
                                     <option value="4">Dress</option>
-                                </select>
+                                </select> *@
 
-                                <select name="Price" id="Size" class="form-control">
+                               @*  <select name="Price" id="Size" class="form-control">
                                     <option value="0">All Sizes</option>
                                     <option value="1">Xl</option>
                                     <option value="2">L</option>
                                     <option value="3">M</option>
                                     <option value="4">S</option>
-                                </select>
+                                </select> *@
                                 @*
                                 <select name="select2">
                                 <option value="">Category</option>
@@ -83,7 +83,7 @@
                             </div> *@
                             <!--  Select State items End-->
                             <!-- Select km items start -->
-                            <div class="select-job-items2">
+                           @*  <div class="select-job-items2">
                                 <select name="select5">
                                     <option value="">Color</option>
                                     <option value="">Whit</option>
@@ -92,10 +92,10 @@
                                     <option value="">Sky Blue</option>
                                     <option value="">Gray</option>
                                 </select>
-                            </div>
+                            </div> *@
                             <!--  Select km items End-->
                             <!-- Select km items start -->
-                            <div class="select-job-items2">
+                           @*  <div class="select-job-items2">
                                 <select name="select6">
                                     <option value="">Price range</option>
                                     <option value="">$10 to $20</option>
@@ -105,7 +105,7 @@
                                     <option value="">$200 to $300</option>
                                     <option value="">$500 to $600</option>
                                 </select>
-                            </div>
+                            </div> *@
                             <!--  Select km items End-->
                         </div>
                     </div>
@@ -132,14 +132,13 @@
 
                             @foreach (Product p in Model)
                             {
-                                if ((p.Category_Id == CategoryId || CategoryId == 0)) //&& (p.Size == Size || Size == null) && (p.Color == Color || Color == null) )
-                                {
+                      
                                     <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
                                         <div class="single-new-arrival mb-50 text-center">
                                             <div class="popular-img">
                                                 <img src="/img/gallery/@p.Image_Url" alt="">
                                                 <div class="favorit-items">
-                                                    <a asp-action="AddToCart" asp-route-Id="@p.Id">
+                                                <a asp-controller="Cart" asp-action="AddToCart" asp-route-Id="@p.Id">
                                                         <img src="/img/gallery/favorit-card.png" alt="">
                                                     </a>
                                                 </div>
@@ -162,8 +161,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                }
 
                             }
                             @*
