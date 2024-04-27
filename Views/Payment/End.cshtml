@@ -1,4 +1,27 @@
-﻿<div class="container" style="margin-bottom:640px">
-    <h1>Thank You</h1>
-</div>
-@await Html.PartialAsync("_footer");
+﻿
+
+<head>
+
+    <title>Thank You</title>
+    <style>
+    
+        .container {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img src="/img/gallery/thankyou.gif" alt="Thank You Image" width="200">
+        <h1>Thank You for Your Order!</h1>
+        <p>We appreciate your business and hope you enjoy your purchase.</p>
+        <p>As a valued customer, you can benefit from the following roles:</p>
+       <div>
+        <a asp-action ="getallcategory" asp-controller="category" style="color:deeppink">Back to Home</a>
+        </div>
+    </div>
+
+    <partial name="_footer"></partial>
+</body>
+

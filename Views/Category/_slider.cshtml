@@ -7,8 +7,8 @@
                         <div class="col-xl-8 col-lg-9">
                             <div class="hero__caption">
                                 <h1>fashion<br>changing<br>always</h1>
-                                <form asp-action="" asp-controller="">
-                                    <button type="submit" class="btn" />Shop Now</butto>
+                                <form asp-action="getallcategory" asp-controller="category">
+                                    <button type="submit" class="btn" />Shop Now</button>
                                 </form>
 
                             </div>
@@ -22,7 +22,7 @@
                         <div class="col-xl-8 col-lg-9">
                             <div class="hero__caption">
                                 <h1>fashion<br>changing<br>always</h1>
-                                <a href="shop.html" class="btn">Shop Now</a>
+                                <a asp-action="getallcategory" asp-controller="category" class="btn">Shop Now</a>
                             </div>
                         </div>
                     </div>
