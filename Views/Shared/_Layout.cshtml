@@ -62,7 +62,7 @@
                         <div class="header-left d-flex align-items-center">
                             <!-- Logo -->
                             <div class="logo">
-                                <a href="index.html"><img src="/img/logo/logo.png" alt=""></a>
+                                <a asp-action="getallcategory" asp-controller="category"><img src="/img/logo/logo.png" alt=""></a>
                             </div>
                             <!-- Main-menu -->
                             <partial name="_NavPartial" />
@@ -107,11 +107,14 @@
                                             else
                                             {
                                             <li>
+                                                  <a asp-controller="Cart" asp-action="Index" class="nav-link">
                                                 <div class="card-stor">
                                                     <img src="/img/gallery/card.svg" alt="">
                                                     <span>0</span>
                                                 </div>
+                                                </a>
                                             </li>
+                                          
                                             }
                                         </li>
                                     </ul>
