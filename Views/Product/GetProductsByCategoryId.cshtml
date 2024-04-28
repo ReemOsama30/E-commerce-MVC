@@ -11,7 +11,7 @@
         width: 100%;
         max-width: 100%;
         height: auto;
-        max-height: 200px; /* Set the maximum height */
+        max-height: 250px; /* Set the maximum height */
     }
 </style>
 
@@ -40,7 +40,7 @@
                 <div class="col-xl-7 col-lg-8 col-md-10">
                     <div class="section-tittle mb-50">
                         <h2>Shop with us</h2>
-                        <p>Browse from 230 latest items</p>
+                        
                     </div>
                 </div>
             </div>
@@ -57,13 +57,13 @@
                                         <div class="popular-img">
                                             <img src="/img/gallery/@p.Image_Url" alt="">
                                             <div class="favorit-items">
-                                                <a asp-action="AddToCart" asp-route-Id="@p.Id">
+                                                <a asp-controller="Cart" asp-action="AddToCart" asp-route-productId="@p.Id">
                                                     <img src="/img/gallery/favorit-card.png" alt="">
                                                 </a>
                                             </div>
                                         </div>
                                         <div class="popular-caption">
-                                            <h3><a href="/Product/Details">@p.Name</a></h3>
+                                            <h3><a href="/Product/Details/@p.Id">@p.Name</a></h3>
                                             <div class="rating mb-10">
                                                 <i class="fas fa-star"></i>
                                                 <i class="fas fa-star"></i>
@@ -73,8 +73,9 @@
                                             </div>
                                             <span>@p.Price</span>
                                             <div>
-                                                <a asp-action="AddToCart" asp-route-Id="@p.Id" class="btn btn-info">Add To Cart</a>
-                                                <a asp-action="AddToWishList" asp-route-Id="@p.Id" class="btn btn-info">Add To WishingList</a>
+                                                <a asp-controller="Cart" asp-action="AddToCart" asp-route-productId="@p.Id" class="btn my-2 ">Add To Cart</a>
+                                                <a asp-controller="Product" asp-action="AddToWishList" asp-route-productId="@p.Id" class="btn ">Add To Wishlist</a>
+
                                             </div>
                                         </div>
                                     </div>
@@ -85,66 +86,7 @@
                 </div>
             </div>
             <!-- listing-area Area End -->
-            <!--? Popular Items Start -->
-            <div class="popular-items">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-lg-3 col-md-6 col-sm-6">
-                            <div class="single-popular-items mb-50 text-center">
-                                <div class="popular-img">
-                                    <img src="/img/gallery/popular1.png" alt="">
-                                    <div class="img-cap">
-                                        <span>Glasses</span>
-                                    </div>
-                                    <div class="favorit-items">
-                                        <a href="shop.html" class="btn">Shop Now</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 col-sm-6">
-                            <div class="single-popular-items mb-50 text-center">
-                                <div class="popular-img">
-                                    <img src="/img/gallery/popular2.png" alt="">
-                                    <div class="img-cap">
-                                        <span>Watches</span>
-                                    </div>
-                                    <div class="favorit-items">
-                                        <a href="shop.html" class="btn">Shop Now</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 col-sm-6">
-                            <div class="single-popular-items mb-50 text-center">
-                                <div class="popular-img">
-                                    <img src="/img/gallery/popular3.png" alt="">
-                                    <div class="img-cap">
-                                        <span>Jackets</span>
-                                    </div>
-                                    <div class="favorit-items">
-                                        <a href="shop.html" class="btn">Shop Now</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 col-sm-6">
-                            <div class="single-popular-items mb-50 text-center">
-                                <div class="popular-img">
-                                    <img src="/img/gallery/popular4.png" alt="">
-                                    <div class="img-cap">
-                                        <span>Clothes</span>
-                                    </div>
-                                    <div class="favorit-items">
-                                        <a href="shop.html" class="btn">Shop Now</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Popular Items End -->
+          
             <!--? Services Area Start -->
             <div class="categories-area section-padding40 gray-bg">
                 <div class="container-fluid">
