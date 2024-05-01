@@ -52,9 +52,5 @@ namespace E_commerce_MVC.Controllers
 
 
 
-        public IActionResult Index()
-        {
-            return View();
-        }
     }
 }

@@ -38,10 +38,7 @@ namespace E_commerce.Controllers
 
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+      
         [HttpGet]
         public IActionResult login()
         {
